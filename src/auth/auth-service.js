@@ -8,6 +8,11 @@ const AuthService = {
             .where({ user_name })
             .first()
     },
+    getUserWithEmail(db, email) {
+        return db('greenhouse_users')
+            .where({ email })
+            .first()
+    },
     comparePasswords(password, hash) {
         return bcrypt.compare(password, hash)
     },
