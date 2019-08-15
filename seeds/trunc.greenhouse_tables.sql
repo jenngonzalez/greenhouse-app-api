@@ -1,0 +1,1 @@
+TRUNCATE greenhouse_users RESTART IDENTITY CASCADE;
