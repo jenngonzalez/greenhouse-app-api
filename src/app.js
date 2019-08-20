@@ -6,6 +6,8 @@ const helmet = require('helmet')
 const { NODE_ENV, CLIENT_ORIGIN } = require('./config')
 const authRouter = require('./auth/auth-router')
 const usersRouter = require('./users/users-router')
+const trefleApi = require('./trefle/trefle-api')
+
 
 
 const app = express()
@@ -24,6 +26,9 @@ app.use(
 
 app.use('/api/users', usersRouter)
 app.use('/api/auth', authRouter)
+
+app.get('/api/trefle', trefleApi)
+
 
 app.get('/', (req, res) => {
     res.send('Greenhouse server running!')
