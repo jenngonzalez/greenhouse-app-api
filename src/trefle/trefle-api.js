@@ -3,39 +3,49 @@ const rp = require('request-promise')
 const request = require('request')
 
 
-trefleApi = (req, res) => {
+const getPlants = (searchTerm, pageSize) => {
     const trefleUrl = config.TREFLE_URL
     const trefleKey = process.env.TREFLE_API_KEY
-    const searchTerm  = req.query.q
-    rp({
-        uri: `${trefleUrl}?token=${trefleKey}&q=${searchTerm}`,
+    return rp({
+        uri: `${trefleUrl}?token=${trefleKey}&q=${searchTerm}&page_size=${pageSize}`,
         json: true
     })
-        .then(data =>  new Promise(function(resolve, reject) {
-            const userPlants = []
-            data.forEach(plant => {
-                rp({
+        .then(data =>  {
+            const userPlants = data.map(plant => {
+                return rp({
                     uri: `${trefleUrl}/${plant.id}?token=${trefleKey}`,
                     json: true
                 })
-                .then(plantData => {
-                    userPlants.push(plantData)
-                }) .catch(err => {
-                    console.log(err)
-                })
             })
-            setTimeout(() => {
-                resolve(userPlants)
-            }, 1000)
             return Promise.all(userPlants)
-        }))
-        .then(userPlants => {
-            res.send(userPlants[1])
         })
-        .catch(err => console.log(err))
+//         .then(userPlants => {
+//             console.log(userPlants)
+//             return userPlants
+//         })
+//         .catch(err => console.log(err))
+}
+
+const trefleApi = async (req, res) => {
+    const searchTerm  = req.query.q
+    const maxResults = 25
+    let finalResults = []
+   
+    while(finalResults.length < maxResults) {
+        try {
+            const plants = await getPlants(searchTerm, maxResults)
+            const filteredPlants = plants.filter(plant => plant.common_name)
+            finalResults = [...finalResults, ...filteredPlants]
+        } catch(error) {
+            console.log(error)
+        }
+    }
+    res.send(finalResults.slice(0, maxResults))
 }
 
 
     
 
 module.exports = trefleApi
+
+// problem - when there are less than 25 plants in the db, this breaks.
