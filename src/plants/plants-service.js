@@ -32,6 +32,35 @@ const PlantsService = {
             .first()
     },
 
+    getPlantsByUserName(db, username) {
+        return db
+            .from('greenhouse_plants AS plant')
+            .select(
+                'plant.id',
+                'plant.name',
+                'plant.family',
+                'plant.watered',
+                'plant.notes',
+                'plant.image',
+                db.raw(
+                    `json_strip_nulls(
+                        row_to_json(
+                            (SELECT tmp FROM (
+                                SELECT
+                                    usr.id
+                                ) tmp)
+                        )
+                    ) AS "user"`
+                )
+            )
+            .leftJoin(
+                'greenhouse_users AS usr',
+                'plant.user_id',
+                'usr.id'
+            )
+            .where('usr.user_name', username)
+    },
+
     insertPlant(db, newPlant) {
         return db
             .insert(newPlant)
