@@ -36,6 +36,9 @@ const trefleApi = async (req, res) => {
             const plants = await getPlants(searchTerm, maxResults)
             const filteredPlants = plants.filter(plant => plant.common_name)
             finalResults = [...finalResults, ...filteredPlants]
+            if (plants.length < 25) {
+                break
+            }
         } catch(error) {
             console.log(error)
         }
