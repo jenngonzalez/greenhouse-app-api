@@ -8,25 +8,25 @@ function makeUsersArray() {
       id: 1,
       email: 'testemail1@gmail.com',
       user_name: 'test-user-1',
-      password: 'password'
+      password: 'Password1'
     },
     {
       id: 2,
       email: 'testemail2@gmail.com',
       user_name: 'test-user-2',
-      password: 'password'
+      password: 'Password2'
     },
     {
       id: 3,
       email: 'testemail3@gmail.com',
       user_name: 'test-user-3',
-      password: 'password'
+      password: 'Password3'
     },
     {
       id: 4,
       email: 'testemail4@gmail.com',
       user_name: 'test-user-4',
-      password: 'password'
+      password: 'Password4'
     },
   ]
 }
@@ -113,7 +113,7 @@ function cleanTables(db) {
 
 function makeAuthHeader(user, secret = process.env.JWT_SECRET) {
     const token = jwt.sign({ user_id: user.id }, secret, {
-        subject: user.user_name,
+        subject: `${user.email}`,
         algorithm: 'HS256'
     })
     return `Bearer ${token}`

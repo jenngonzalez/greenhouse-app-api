@@ -2,7 +2,7 @@ const knex = require('knex')
 const app = require('../src/app')
 const helpers = require('./test-helpers')
 
-describe.only('Plants Endpoints', function() {
+describe('Plants Endpoints', function() {
     let db
 
     const { testUsers } = helpers.makeGreenhouseFixtures()
