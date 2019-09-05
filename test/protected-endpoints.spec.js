@@ -2,7 +2,7 @@ const knex = require('knex')
 const app = require('../src/app')
 const helpers = require('./test-helpers')
 
-describe('Protected endpoints', function() {
+describe.only('Protected endpoints', function() {
   let db
 
   const { testUsers } = helpers.makeGreenhouseFixtures()
@@ -37,11 +37,11 @@ describe('Protected endpoints', function() {
     //   path: '/api/plants/:plant_id',
     //   method: supertest(app).patch,
     // },
-    // {
-    //   name: 'DELETE plant',
-    //   path: '/api/plants/:plant_id',
-    //   method: supertest(app).delete,
-    // },
+    {
+      name: 'DELETE plant',
+      path: '/api/plants/:username/:plant',
+      method: supertest(app).delete,
+    },
   ]
 
   protectedEndpoints.forEach(endpoint => {

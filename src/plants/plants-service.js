@@ -86,6 +86,20 @@ const PlantsService = {
                 user_name: user.user_name
             },
         }
+    },
+
+    deletePlant(knex, id) {
+        return knex('greenhouse_plants')
+            .where({ id })
+            .delete()
+    },
+
+    updatePlant(knex, username, id, newPlantData) {
+        return knex('greenhouse_plants')
+            // .where({ username })
+            // username doesn't exist in this table, need to join the user table first
+            .where({ id })
+            .update(newPlantData)
     }
 }
 

@@ -3,11 +3,6 @@
 const UserPlantsService = {
     getPlantsByUserName(db, username) {
         return db
-            // .from('greenhouse_users AS user')
-            // .select(
-            //     'user.id',
-
-            // )
             .from('greenhouse_plants AS plant')
             .select(
                 '*',

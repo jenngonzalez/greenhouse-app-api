@@ -47,6 +47,24 @@ plantsRouter
             })
     })
 
+plantsRouter
+    .route('/:username/:plant')
+    // .all(checkUserExists)
+    // check if plant exists:
+    // .all(checkPlantExists)
+    // need to verify that /:username matches the logged-in username - clientside
+    .delete(requireAuth, (req, res, next) => {
+      console.log(req.params.plant)
+      PlantsService.deletePlant(
+        req.app.get('db'),
+        req.params.plant
+      )
+        .then(() => {
+          res.status(204).end()
+        })
+        .catch(next)
+    })
+
 
 
 /* async/await syntax for promises */
@@ -72,6 +90,10 @@ async function checkUserExists(req, res, next) {
     }
   }
 
+  // async function checkPlantExists(req, res, next) {
+  //   console.log(`running checkPlantExists`)
+  //   console.log(`req.params.plant: ${req.params.plant}`)
+  // }
 
 
 module.exports = plantsRouter
