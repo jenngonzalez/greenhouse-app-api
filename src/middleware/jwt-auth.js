@@ -17,7 +17,7 @@ function requireAuth(req, res, next) {
         // query to db looking for user with a user_name matching the sub in the JWT payload:
         const payload = AuthService.verifyJwt(bearerToken)
 
-        console.log(payload)
+        // console.log(payload)
 
         AuthService.getUserWithEmail(
             req.app.get('db'),
@@ -27,7 +27,7 @@ function requireAuth(req, res, next) {
                 return res.status(401).json({
                     error: 'Unauthorized request'
                 })
-            console.log(user)
+            // console.log(user)
             req.user = user
             next()
         })
