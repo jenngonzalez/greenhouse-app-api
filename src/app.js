@@ -29,7 +29,6 @@ app.use(
 app.use('/api/users', usersRouter)
 app.use('/api/auth', authRouter)
 app.use('/api/plants', plantsRouter)
-// app.use('/api/username', userPlantsRouter)
 
 app.get('/api/trefle', trefleApi)
 

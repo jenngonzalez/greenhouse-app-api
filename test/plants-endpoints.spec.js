@@ -6,6 +6,7 @@ describe('Plants Endpoints', function() {
     let db
 
     const { testUsers } = helpers.makeGreenhouseFixtures()
+    const { testPlants } = helpers.makeGreenhouseFixtures()
 
     before('make knex instance', () => {
         db = knex({
@@ -75,6 +76,48 @@ describe('Plants Endpoints', function() {
                 .expect(400, {
                     error: `Missing plant name in request body`
                 })
+        })
+    })
+
+    describe(`DELETE /api/plants/:username/:plant`, () => {
+        beforeEach('insert users', () =>
+            helpers.seedUsers(db, testUsers)
+        )
+        beforeEach('insert plants', () => 
+            helpers.seedPlants(db, testUsers, testPlants)
+        )
+
+        context.skip(`Given no plants`, () => {
+            it(`responds with 404`, () => {
+                const plantId = 987654321
+                const testUser = testUsers[0].user_name
+                return supertest(app)
+                    .delete(`/api/${testUser}/${plantId}`)
+                    .set('Authorization', helpers.makeAuthHeader(testUsers[0]))
+                    .expect(404, {
+                        error: { message: `Plant doesn't exist` }
+                    })
+
+            })
+        })
+
+        context(`Given there are plants in the database associated with that user`, () => {
+            it(`responds with 204 and removes the specified plant`, () => {
+                const testUser = testUsers[0].user_name
+                const idToRemove = 1
+                const userPlants = testPlants.filter(plant => plant.user_id === testUsers[0].id)
+                const expectedPlants = userPlants.filter(plant => plant.id !== idToRemove)
+                return supertest(app)
+                    .delete(`/api/plants/${testUser}/${idToRemove}`)
+                    .set('Authorization', helpers.makeAuthHeader(testUsers[0]))
+                    .expect(204)
+                    .then(res => {
+                        return supertest(app)
+                            .get(`/api/plants/${testUser}`)
+                            .set('Authorization', helpers.makeAuthHeader(testUsers[0]))
+                            .expect(expectedPlants)
+                    })
+            })
         })
     })
 })

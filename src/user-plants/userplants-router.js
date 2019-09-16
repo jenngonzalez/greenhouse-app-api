@@ -10,7 +10,6 @@ userPlantsRouter
     .route('/')
     .all(checkUserExists)
     .get((req, res) => {
-        // console.log(req.params.username)
         UserPlantsService.getPlantsByUserName(
             req.app.get('db'),
             req.params.username
@@ -24,8 +23,6 @@ userPlantsRouter
 
 /* async/await syntax for promises */
 async function checkUserExists(req, res, next) {
-    // console.log(`running checkUserExists`)
-    // console.log(`req.params.username: ${req.params.username}`)
     try {
     const article = await AuthService.getUserWithUserName(
         req.app.get('db'),

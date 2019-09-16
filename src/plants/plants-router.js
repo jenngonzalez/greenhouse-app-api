@@ -37,7 +37,6 @@ plantsRouter
     .route('/:username')
     .all(checkUserExists)
     .get((req, res) => {
-        console.log(`req.params.username: ${req.params.username}`)
         PlantsService.getPlantsByUserName(
             req.app.get('db'),
             req.params.username
@@ -49,12 +48,7 @@ plantsRouter
 
 plantsRouter
     .route('/:username/:plant')
-    // .all(checkUserExists)
-    // check if plant exists:
-    // .all(checkPlantExists)
-    // need to verify that /:username matches the logged-in username - clientside
     .delete(requireAuth, (req, res, next) => {
-      console.log(req.params.plant)
       PlantsService.deletePlant(
         req.app.get('db'),
         req.params.plant
@@ -69,8 +63,6 @@ plantsRouter
 
 /* async/await syntax for promises */
 async function checkUserExists(req, res, next) {
-    console.log(`running checkUserExists`)
-    console.log(`req.params.username: ${req.params.username}`)
     try {
       const username = await AuthService.getUserWithUserName(
         req.app.get('db'),
@@ -89,11 +81,6 @@ async function checkUserExists(req, res, next) {
       next(error)
     }
   }
-
-  // async function checkPlantExists(req, res, next) {
-  //   console.log(`running checkPlantExists`)
-  //   console.log(`req.params.plant: ${req.params.plant}`)
-  // }
 
 
 module.exports = plantsRouter

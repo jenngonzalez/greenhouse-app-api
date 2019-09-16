@@ -83,7 +83,7 @@ function seedUsers(db, users) {
         )
 }
 
-function seedPlants(db, plants) {
+function seedPlants(db, users, plants) {
     return db.into('greenhouse_plants').insert(plants)
         .then(() => 
             db.raw(
