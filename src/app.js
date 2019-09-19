@@ -7,7 +7,6 @@ const { NODE_ENV, CLIENT_ORIGIN } = require('./config')
 const authRouter = require('./auth/auth-router')
 const usersRouter = require('./users/users-router')
 const plantsRouter = require('./plants/plants-router')
-// const userPlantsRouter = require('./user-plants/userplants-router')
 const trefleApi = require('./trefle/trefle-api')
 
 

@@ -87,20 +87,6 @@ describe('Plants Endpoints', function() {
             helpers.seedPlants(db, testUsers, testPlants)
         )
 
-        context.skip(`Given no plants`, () => {
-            it(`responds with 404`, () => {
-                const plantId = 987654321
-                const testUser = testUsers[0].user_name
-                return supertest(app)
-                    .delete(`/api/${testUser}/${plantId}`)
-                    .set('Authorization', helpers.makeAuthHeader(testUsers[0]))
-                    .expect(404, {
-                        error: { message: `Plant doesn't exist` }
-                    })
-
-            })
-        })
-
         context(`Given there are plants in the database associated with that user`, () => {
             it(`responds with 204 and removes the specified plant`, () => {
                 const testUser = testUsers[0].user_name
@@ -116,6 +102,84 @@ describe('Plants Endpoints', function() {
                             .get(`/api/plants/${testUser}`)
                             .set('Authorization', helpers.makeAuthHeader(testUsers[0]))
                             .expect(expectedPlants)
+                    })
+            })
+        })
+    })
+
+    describe(`PATCH /api/plants/:username/:plant`, () => {
+        beforeEach('insert users', () => 
+            helpers.seedUsers(db, testUsers)
+        )
+        beforeEach('insert plants', () => 
+            helpers.seedPlants(db, testUsers, testPlants)
+        )
+
+        context('Given there are plants in the database associated with that user', () => {
+            it('responds with 200 and updates the plant', () => {
+                const testUser = testUsers[0].user_name
+                const idToUpdate = 1
+                const updatePlant = {
+                    name: 'updated plant name',
+                    family: 'updated plant family',
+                    watered: new Date(),
+                    notes: 'updated plant notes',
+                    image: 'updatedplantimage.jpg'
+                }
+                const expectedPlant = {
+                    ...testPlants[idToUpdate - 1],
+                    ...updatePlant
+                }
+                return supertest(app)
+                    .patch(`/api/plants/${testUser}/${idToUpdate}`)
+                    .set('Authorization', helpers.makeAuthHeader(testUsers[0]))
+                    .send(updatePlant)
+                    .expect(200)
+                    .then(res => {
+                        supertest(app)
+                            .get(`/api/plants/${testUser}/${idToUpdate}`)
+                            .set('Authorization', helpers.makeAuthHeader(testUsers[0]))
+                            .expect(expectedPlant)
+                    })
+            })
+
+            it(`responds with 400 when given no required fields`, () => {
+                const testUser = testUsers[0].user_name
+                const idToUpdate = 1
+                return supertest(app)
+                    .patch(`/api/plants/${testUser}/${idToUpdate}`)
+                    .set('Authorization', helpers.makeAuthHeader(testUsers[0]))
+                    .expect(400, {
+                        error: {
+                            message: `Request body must contain either 'name', 'family', 'watered', 'notes' or 'image'`
+                        }   
+                    })
+            })
+
+            it(`responds with 200 when updating only a subset of fields`, () => {
+                const testUser = testUsers[0].user_name
+                const idToUpdate = 1
+                const updatePlant = {
+                    name: 'updated plant name'
+                }
+                const expectedPlant = {
+                    ...testPlants[idToUpdate - 1],
+                    ...updatePlant
+                }
+
+                return supertest(app)
+                    .patch(`/api/plants/${testUser}/${idToUpdate}`)
+                    .set('Authorization', helpers.makeAuthHeader(testUsers[0]))
+                    .send({
+                        ...updatePlant,
+                        fieldToIgnore: 'should not be in GET response'
+                    })
+                    .expect(200)
+                    .then(res => {
+                        supertest(app)
+                            .get(`/api/plants/${testUser}/${idToUpdate}`)
+                            .set('Authorization', helpers.makeAuthHeader(testUsers[0]))
+                            .expect(expectedPlant)
                     })
             })
         })

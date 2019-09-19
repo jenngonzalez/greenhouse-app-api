@@ -1,5 +1,3 @@
-// const xss = require('xss')
-
 const UserPlantsService = {
     getPlantsByUserName(db, username) {
         return db
@@ -30,9 +28,3 @@ const UserPlantsService = {
 }
 
 module.exports = UserPlantsService
-
-
-
-
-    // search through users, find user_id based on username
-    // then, with user_id, search through plants for plants that plant.user_id matches the user.id

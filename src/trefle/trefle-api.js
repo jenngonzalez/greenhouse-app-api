@@ -19,11 +19,6 @@ const getPlants = (searchTerm, pageSize) => {
             })
             return Promise.all(userPlants)
         })
-//         .then(userPlants => {
-//             console.log(userPlants)
-//             return userPlants
-//         })
-//         .catch(err => console.log(err))
 }
 
 const trefleApi = async (req, res) => {
@@ -50,5 +45,3 @@ const trefleApi = async (req, res) => {
     
 
 module.exports = trefleApi
-
-// problem - when there are less than 25 plants in the db, this breaks.

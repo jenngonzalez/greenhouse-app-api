@@ -47,17 +47,46 @@ plantsRouter
     })
 
 plantsRouter
-    .route('/:username/:plant')
-    .delete(requireAuth, (req, res, next) => {
-      PlantsService.deletePlant(
-        req.app.get('db'),
-        req.params.plant
-      )
-        .then(() => {
-          res.status(204).end()
-        })
-        .catch(next)
-    })
+  .route('/:username/:plant')
+  .delete(requireAuth, (req, res, next) => {
+    PlantsService.deletePlant(
+      req.app.get('db'),
+      req.params.plant,
+      req.params.username
+    )
+      .then(numRowsAffected => {
+        res
+          .status(204)
+          .end()
+      })
+      .catch(next)
+  })
+  .patch(jsonBodyParser, requireAuth, (req, res, next) => {
+    const plantId = req.params.plant
+    const { name, family, watered, notes, image } = req.body
+    const plantToUpdate = { name, family, watered, notes, image }
+
+    const numberOfValues = Object.values(plantToUpdate).filter(Boolean).length
+    if(numberOfValues === 0) {
+      return res.status(400).json({
+          error: {
+              message: `Request body must contain either 'name', 'family', 'watered', 'notes' or 'image'`
+          }
+      })
+    }
+  
+    PlantsService.updatePlant(
+      req.app.get('db'),
+      plantId,
+      plantToUpdate
+    )
+      .then(newPlant => {
+        res
+          .status(200)
+          .json(newPlant)
+      })
+      .catch(next)
+  })
 
 
 

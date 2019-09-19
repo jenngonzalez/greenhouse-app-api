@@ -88,18 +88,23 @@ const PlantsService = {
         }
     },
 
-    deletePlant(knex, id) {
-        return knex('greenhouse_plants')
+    deletePlant(db, id) {
+        return db
+            .from('greenhouse_plants')
             .where({ id })
             .delete()
     },
 
-    updatePlant(knex, username, id, newPlantData) {
-        return knex('greenhouse_plants')
-            // .where({ username })
-            // username doesn't exist in this table, need to join the user table first
+    updatePlant(db, id, newPlantData) {
+        return db
+            .from('greenhouse_plants')
             .where({ id })
             .update(newPlantData)
+            .returning('*')
+            .then(([plant]) => plant)
+            .then(plant =>
+                PlantsService.getById(db, id)
+            )
     }
 }
 
