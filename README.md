@@ -8,4 +8,4 @@
 ## Tech Used:
 Node.js, Express, postgreSQL
 
-## Link to App: https://digital-greenhouse.now.sh/results
+## Link to App: https://digital-greenhouse.now.sh/
